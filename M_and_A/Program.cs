@@ -1,8 +1,13 @@
+using M_and_A.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddDbContext<ShoppingContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingContext")));
+builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,7 +23,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+IApplicationBuilder applicationBuilder = app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
