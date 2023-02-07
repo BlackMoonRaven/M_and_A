@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Tasks.Deployment.Bootstrapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using M_and_A.Models;
 
 namespace M_and_A.Data
