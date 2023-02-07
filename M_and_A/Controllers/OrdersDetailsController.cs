@@ -10,85 +10,85 @@ using M_and_A.Models;
 
 namespace M_and_A.Controllers
 {
-    public class OrdersController : Controller
+    public class OrdersDetailsController : Controller
     {
         private readonly ShoppingContext _context;
 
-        public OrdersController(ShoppingContext context)
+        public OrdersDetailsController(ShoppingContext context)
         {
             _context = context;
         }
 
-        // GET: Orders
+        // GET: OrdersDetails
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Orders.ToListAsync());
+              return View(await _context.OrderDetails.ToListAsync());
         }
 
-        // GET: Orders/Details/5
+        // GET: OrdersDetails/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _context.OrderDetails == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
+            var ordersDetails = await _context.OrderDetails
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
+            if (ordersDetails == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(ordersDetails);
         }
 
-        // GET: Orders/Create
+        // GET: OrdersDetails/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Orders/Create
+        // POST: OrdersDetails/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CustomerId")] Order order)
+        public async Task<IActionResult> Create([Bind("Id,Total,OrderDate")] OrdersDetails ordersDetails)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                _context.Add(ordersDetails);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(order);
+            return View(ordersDetails);
         }
 
-        // GET: Orders/Edit/5
+        // GET: OrdersDetails/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _context.OrderDetails == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var ordersDetails = await _context.OrderDetails.FindAsync(id);
+            if (ordersDetails == null)
             {
                 return NotFound();
             }
-            return View(order);
+            return View(ordersDetails);
         }
 
-        // POST: Orders/Edit/5
+        // POST: OrdersDetails/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Total,OrderDate")] OrdersDetails ordersDetails)
         {
-            if (id != order.Id)
+            if (id != ordersDetails.Id)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace M_and_A.Controllers
             {
                 try
                 {
-                    _context.Update(order);
+                    _context.Update(ordersDetails);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.Id))
+                    if (!OrdersDetailsExists(ordersDetails.Id))
                     {
                         return NotFound();
                     }
@@ -113,49 +113,49 @@ namespace M_and_A.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(order);
+            return View(ordersDetails);
         }
 
-        // GET: Orders/Delete/5
+        // GET: OrdersDetails/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _context.OrderDetails == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
+            var ordersDetails = await _context.OrderDetails
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
+            if (ordersDetails == null)
             {
                 return NotFound();
             }
 
-            return View(order);
+            return View(ordersDetails);
         }
 
-        // POST: Orders/Delete/5
+        // POST: OrdersDetails/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Orders == null)
+            if (_context.OrderDetails == null)
             {
-                return Problem("Entity set 'ShoppingContext.Orders'  is null.");
+                return Problem("Entity set 'ShoppingContext.OrderDetails'  is null.");
             }
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
+            var ordersDetails = await _context.OrderDetails.FindAsync(id);
+            if (ordersDetails != null)
             {
-                _context.Orders.Remove(order);
+                _context.OrderDetails.Remove(ordersDetails);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(int id)
+        private bool OrdersDetailsExists(int id)
         {
-          return _context.Orders.Any(e => e.Id == id);
+          return _context.OrderDetails.Any(e => e.Id == id);
         }
     }
 }

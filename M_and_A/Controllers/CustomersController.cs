@@ -1,83 +1,161 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using M_and_A.Data;
+using M_and_A.Models;
 
 namespace M_and_A.Controllers
 {
     public class CustomersController : Controller
     {
-        // GET: CustomerController
-        public ActionResult Index()
+        private readonly ShoppingContext _context;
+
+        public CustomersController(ShoppingContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Customers1
+        public async Task<IActionResult> Index()
+        {
+              return View(await _context.Customers.ToListAsync());
+        }
+
+        // GET: Customers1/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null || _context.Customers == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
+        }
+
+        // GET: Customers1/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        // GET: CustomerController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: CustomerController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CustomerController/Create
+        // POST: Customers1/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Discount")] Customer customer)
         {
-            try
+            if (ModelState.IsValid)
             {
+                _context.Add(customer);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(customer);
         }
 
-        // GET: CustomerController/Edit/5
-        public ActionResult Edit(int id)
+        // GET: Customers1/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null || _context.Customers == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
         }
 
-        // POST: CustomerController/Edit/5
+        // POST: Customers1/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Discount")] Customer customer)
         {
-            try
+            if (id != customer.Id)
             {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(customer);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CustomerExists(customer.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
+            return View(customer);
         }
 
-        // GET: CustomerController/Delete/5
-        public ActionResult Delete(int id)
+        // GET: Customers1/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            return View();
+            if (id == null || _context.Customers == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
         }
 
-        // POST: CustomerController/Delete/5
-        [HttpPost]
+        // POST: Customers1/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
+            if (_context.Customers == null)
             {
-                return RedirectToAction(nameof(Index));
+                return Problem("Entity set 'ShoppingContext.Customers'  is null.");
             }
-            catch
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer != null)
             {
-                return View();
+                _context.Customers.Remove(customer);
             }
+            
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool CustomerExists(int id)
+        {
+          return _context.Customers.Any(e => e.Id == id);
         }
     }
 }
