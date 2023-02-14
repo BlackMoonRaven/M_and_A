@@ -17,7 +17,7 @@ namespace M_and_A.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -43,7 +43,7 @@ namespace M_and_A.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("M_and_A.Models.Discount", b =>
@@ -61,12 +61,12 @@ namespace M_and_A.Migrations
                     b.Property<decimal>("Percent")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProductsId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductsId");
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Discounts");
                 });
@@ -84,10 +84,10 @@ namespace M_and_A.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("M_and_A.Models.OrdersDetails", b =>
+            modelBuilder.Entity("M_and_A.Models.OrderDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -111,7 +111,7 @@ namespace M_and_A.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("M_and_A.Models.Products", b =>
+            modelBuilder.Entity("M_and_A.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -130,10 +130,40 @@ namespace M_and_A.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Category = "Underwear",
+                            Name = "Thong",
+                            Price = 300f
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Category = "Pants",
+                            Name = "Jeans",
+                            Price = 950f
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Category = "T-shirt",
+                            Name = "Top",
+                            Price = 500f
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Category = "Dress",
+                            Name = "Long Dress",
+                            Price = 800f
+                        });
                 });
 
-            modelBuilder.Entity("OrderProducts", b =>
+            modelBuilder.Entity("OrderProduct", b =>
                 {
                     b.Property<int>("OrdersId")
                         .HasColumnType("int");
@@ -145,24 +175,24 @@ namespace M_and_A.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProducts");
+                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("M_and_A.Models.Discount", b =>
                 {
-                    b.HasOne("M_and_A.Models.Products", null)
+                    b.HasOne("M_and_A.Models.Product", null)
                         .WithMany("DiscountId")
-                        .HasForeignKey("ProductsId");
+                        .HasForeignKey("ProductId");
                 });
 
-            modelBuilder.Entity("M_and_A.Models.OrdersDetails", b =>
+            modelBuilder.Entity("M_and_A.Models.OrderDetail", b =>
                 {
                     b.HasOne("M_and_A.Models.Order", null)
                         .WithMany("Details")
                         .HasForeignKey("OrderId");
                 });
 
-            modelBuilder.Entity("OrderProducts", b =>
+            modelBuilder.Entity("OrderProduct", b =>
                 {
                     b.HasOne("M_and_A.Models.Order", null)
                         .WithMany()
@@ -170,7 +200,7 @@ namespace M_and_A.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("M_and_A.Models.Products", null)
+                    b.HasOne("M_and_A.Models.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -182,7 +212,7 @@ namespace M_and_A.Migrations
                     b.Navigation("Details");
                 });
 
-            modelBuilder.Entity("M_and_A.Models.Products", b =>
+            modelBuilder.Entity("M_and_A.Models.Product", b =>
                 {
                     b.Navigation("DiscountId");
                 });
