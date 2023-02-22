@@ -14,7 +14,7 @@ namespace M_and_A
                 {
                     Id = 1,
                     Name = "Thong",
-                    Category = "Underwear",
+                    Type = Product.Category.Underwear,
                     Price = 300.0F
 
                 },
@@ -23,7 +23,7 @@ namespace M_and_A
                 {
                     Id = 2,
                     Name = "Jeans",
-                    Category = "Pants",
+                    Type = Product.Category.Pants,
                     Price = 950.0F
                 },
 
@@ -31,7 +31,7 @@ namespace M_and_A
                 {
                     Id = 3,
                     Name = "Top",
-                    Category = "T-shirt",
+                    Type = Product.Category.TShirt,
                     Price = 500.0F
                 },
 
@@ -39,7 +39,7 @@ namespace M_and_A
                 {
                     Id = 4,
                     Name = "Long Dress",
-                    Category = "Dress",
+                    Type = Product.Category.Dress,
                     Price = 800.0F
                 }
             );

@@ -119,14 +119,14 @@ namespace M_and_A.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -136,30 +136,30 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 1,
-                            Category = "Underwear",
                             Name = "Thong",
-                            Price = 300f
+                            Price = 300f,
+                            Type = 3
                         },
                         new
                         {
                             Id = 2,
-                            Category = "Pants",
                             Name = "Jeans",
-                            Price = 950f
+                            Price = 950f,
+                            Type = 4
                         },
                         new
                         {
                             Id = 3,
-                            Category = "T-shirt",
                             Name = "Top",
-                            Price = 500f
+                            Price = 500f,
+                            Type = 5
                         },
                         new
                         {
                             Id = 4,
-                            Category = "Dress",
                             Name = "Long Dress",
-                            Price = 800f
+                            Price = 800f,
+                            Type = 2
                         });
                 });
 

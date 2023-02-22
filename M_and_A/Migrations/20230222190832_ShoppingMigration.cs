@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace M_and_A.Migrations
 {
-    public partial class Initial : Migration
+    public partial class ShoppingMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,7 +44,7 @@ namespace M_and_A.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
@@ -118,13 +118,13 @@ namespace M_and_A.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "Category", "Name", "Price" },
+                columns: new[] { "Id", "Name", "Price", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Underwear", "Thong", 300f },
-                    { 2, "Pants", "Jeans", 950f },
-                    { 3, "T-shirt", "Top", 500f },
-                    { 4, "Dress", "Long Dress", 800f }
+                    { 1, "Thong", 300f, 3 },
+                    { 2, "Jeans", 950f, 4 },
+                    { 3, "Top", 500f, 5 },
+                    { 4, "Long Dress", 800f, 2 }
                 });
 
             migrationBuilder.CreateIndex(
