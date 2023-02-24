@@ -54,9 +54,9 @@ namespace M_and_A.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Category,Price")] Products products)
+        public async Task<IActionResult> Create([Bind("Id,Name,Category,Price")] Product products)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(products);
                 await _context.SaveChangesAsync();
@@ -86,7 +86,7 @@ namespace M_and_A.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Category,Price")] Products products)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Category,Price")] Product products)
         {
             if (id != products.Id)
             {

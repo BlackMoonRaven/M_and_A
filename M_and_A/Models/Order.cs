@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }
-        public ICollection<OrdersDetails> Details { get; set; }
-        public ICollection<Products> Product { get; set; }
+        public ICollection<OrderDetail> Details { get; set; }
+        public ICollection<Product> Product { get; set; }
     }
 }
