@@ -54,7 +54,7 @@ namespace M_and_A.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Category,Price")] Product products)
+        public async Task<IActionResult> Create([Bind("Id,Name,Type,Price")] Product products)
         {
             if (!ModelState.IsValid)
             {
@@ -86,14 +86,14 @@ namespace M_and_A.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Category,Price")] Product products)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Price")] Product products)
         {
             if (id != products.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
