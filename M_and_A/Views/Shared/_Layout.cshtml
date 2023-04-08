@@ -6,7 +6,9 @@
     <title>@ViewData["Title"] - M_and_A</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/mystyle.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/M_and_A.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="C:/Users/Xiaomi/Desktop/font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <header>
@@ -19,15 +21,33 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
-                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customer</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
+                        </li>
+                        
+                        <li class="nav-item" style="position: absolute; right:0">
+                            <div class="row gx-15">
+                                <div class="col">
+                                    <div class="p-2 border bg-light">Search</div>
+                                    <svg src="C:/Users/Xiaomi/Desktop/M_and_A/M&Aproj/Icon/search.png" alt="Search Icon"></svg>
+                                    
+                                </div>
+                                
+                                <div class="col">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Log in</a>
+                                </div>
+
+
+                            </div>
+                        </li>
+
                     </ul>
                 </div>
             </div>
