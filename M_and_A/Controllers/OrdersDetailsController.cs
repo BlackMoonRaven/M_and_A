@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using M_and_A.Data;
 using M_and_A.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace M_and_A.Controllers
 {
@@ -20,6 +22,7 @@ namespace M_and_A.Controllers
         }
 
         // GET: OrdersDetails
+        [Authorize(Roles = "admin, buyer")]
         public async Task<IActionResult> Index()
         {
               return View(await _context.OrderDetails.ToListAsync());

@@ -7,6 +7,7 @@ namespace M_and_A
 {
     public static class SampleData
     {
+
         public static void SeedData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().HasData(
