@@ -1,14 +1,32 @@
 using M_and_A.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using M_and_A.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddDbContext<ShoppingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingContext")));
+builder.Services.AddDbContext<UserContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UserContext")));
 
-builder.Services.AddDbContext<ShoppingContext>(options=>options.UseSqlServer(builder.Configuration.GetConnectionString("ShoppingContext")));
+
+
 builder.Services.AddControllersWithViews();
+
+////
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
 var app = builder.Build();
+/////
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -22,8 +40,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
-IApplicationBuilder applicationBuilder = app.UseAuthorization();
+//IApplicationBuilder applicationBuilder = app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
