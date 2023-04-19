@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Product>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -22,9 +23,22 @@
                 <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
             </div>
             <div class="col-1">
-                <img src="~/img/blackDress.jpg" class="img-fluid"width="250" hight="250">
+                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
             </div>
         </div>
+        @if (Model != null)
+        {
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-md-3 my-3">
+                        <img src="@product.ImagePath" alt="@product.Name" />   
+                        <p>@product.Name</p>
+                        <p>@product.Price</p>
+                    </div>
+                }
+            </div>
+        }
     </div>
 </div>
 

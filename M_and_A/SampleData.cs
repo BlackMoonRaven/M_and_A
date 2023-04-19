@@ -16,7 +16,9 @@ namespace M_and_A
                     Id = 1,
                     Name = "Thong",
                     Type = Product.Category.Underwear,
-                    Price = 300.0F
+                    Price = 300.0F,
+                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
+                    ImageMimeType = "img/jpeg"
 
                 },
                 
@@ -25,7 +27,9 @@ namespace M_and_A
                     Id = 2,
                     Name = "Jeans",
                     Type = Product.Category.Pants,
-                    Price = 950.0F
+                    Price = 950.0F,
+                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
+                    ImageMimeType = "img/jpeg"
                 },
 
                 new Product
@@ -33,7 +37,9 @@ namespace M_and_A
                     Id = 3,
                     Name = "Top",
                     Type = Product.Category.TShirt,
-                    Price = 500.0F
+                    Price = 500.0F,
+                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
+                    ImageMimeType = "img/jpeg"
                 },
 
                 new Product
@@ -41,7 +47,9 @@ namespace M_and_A
                     Id = 4,
                     Name = "Long Dress",
                     Type = Product.Category.Dress,
-                    Price = 800.0F
+                    Price = 800.0F,
+                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
+                    ImageMimeType = "img/jpeg"
                 }
             );
         }

@@ -22,10 +22,15 @@ namespace M_and_A.Controllers
         }
 
         // GET: Products
-        [Authorize(Roles = "admin, buyer")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Products.ToListAsync());
+            return View(await _context.Products.ToListAsync());
+        }
+        public IActionResult MyAction()
+        {
+            Product product = new Product { Name = "Product name", Price = 10.0F };
+            return View(product);
         }
 
         // GET: Products/Details/5
@@ -166,5 +171,24 @@ namespace M_and_A.Controllers
         {
           return _context.Products.Any(e => e.Id == id);
         }
+        //public IActionResult AddProduct(Product product, IFormFile image)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (image != null && image.Length > 0)
+        //        {
+        //            using (var ms = new MemoryStream())
+        //            {
+        //                image.CopyTo(ms);
+        //                product.Image = ms.ToArray();
+        //            }
+        //        }
+
+        //        _context.Products.Add(product);
+        //        _context.SaveChanges();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(product);
+        //}
     }
 }

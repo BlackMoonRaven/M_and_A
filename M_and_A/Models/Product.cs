@@ -35,5 +35,9 @@ namespace M_and_A.Models
         public float Price { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Discount> DiscountId { get; set; }
+        public byte[] ImagePath { get; set; }
+        public string ImageMimeType { get; set; }
+        //photo
+        //description
     }
 }

@@ -17,7 +17,7 @@ namespace M_and_A.Controllers
         {
             return View();
         }
-
+        
         public IActionResult Privacy()
         {
             return View();
