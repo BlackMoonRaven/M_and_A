@@ -1,32 +1,31 @@
-﻿using M_and_A.Models;
+﻿using M_and_A.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
-namespace M_and_A.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ShoppingContext _context;
+
+    public HomeController(ShoppingContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+    public IActionResult Index()
+    {
+        var products = _context.Products.ToList();
+        return View(products);
+    }
 
-        public IActionResult Index()
+    public IActionResult GetImage(int id)
+    {
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
+        if (product != null)
         {
-            return View();
+            return File(product.ImagePath, product.ImageMimeType);
         }
-        
-        public IActionResult Privacy()
+        else
         {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return null;
         }
     }
 }

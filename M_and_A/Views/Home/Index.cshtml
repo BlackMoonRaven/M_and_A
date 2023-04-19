@@ -32,7 +32,7 @@
                 @foreach (var product in Model)
                 {
                     <div class="col-md-3 my-3">
-                        <img src="@product.ImagePath" alt="@product.Name" />   
+                        <img src="data:@product.ImageMimeType;base64,@Convert.ToBase64String(product.ImagePath)" alt="@product.Name" style="width: 250px; height: 250px;" />
                         <p>@product.Name</p>
                         <p>@product.Price</p>
                     </div>
