@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -30,6 +30,12 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ImageName" class="control-label"></label>
+                <input asp-for="ImageName" class="form-control" type="text" readonly />
+                <input type="file" id="fileInput" class="form-control" accept="image/*" />
+                <span asp-validation-for="ImageName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -41,5 +47,53 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var fileInput = document.getElementById('fileInput');
+        var imageNameInput = document.getElementById('ImageName');
+
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var img = new Image();
+                    img.src = e.target.result;
+
+                    img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        var ctx = canvas.getContext('2d');
+
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+
+                        ctx.drawImage(img, 0, 0);
+
+                        var dataURL = canvas.toDataURL('image/jpg');
+
+                        imageNameInput.value = fileInput.files[0].name;
+
+                        //// Відправте dataURL на сервер та збережіть його у папку wwwroot/img
+                        //// Додайте код для відправки файлу на сервер, використовуючи, наприклад, AJAX або форму
+
+                        //// Приклад використання AJAX для відправки файлу на сервер:
+                        //var xhr = new XMLHttpRequest();
+                        //xhr.open('POST', '/Products/SaveImage', true);
+                        //xhr.setRequestHeader('Content-Type', 'application/json');
+                        //xhr.onreadystatechange = function () {
+                        //    if (xhr.readyState === 4 && xhr.status === 200) {
+                        //        // Файл успішно завантажений
+                        //    }
+                        //};
+                        //xhr.send(JSON.stringify({ dataURL: dataURL }));
+                    };
+                };
+
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+    </script>
+
 }

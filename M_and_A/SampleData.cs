@@ -14,22 +14,18 @@ namespace M_and_A
                 new Product
                 {
                     Id = 1,
-                    Name = "Thong",
+                    Name = "Trousers",
                     Type = Product.Category.Underwear,
                     Price = 300.0F,
-                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
-                    ImageMimeType = "img/jpeg"
-
+                    ImageName = SaveImageAndGetFileName("wwwroot/img/trouses.jpg")
                 },
-                
                 new Product
                 {
                     Id = 2,
                     Name = "Jeans",
                     Type = Product.Category.Pants,
                     Price = 950.0F,
-                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
-                    ImageMimeType = "img/jpeg"
+                    ImageName = SaveImageAndGetFileName("wwwroot/img/jeans.jpg")              
                 },
 
                 new Product
@@ -38,8 +34,7 @@ namespace M_and_A
                     Name = "Top",
                     Type = Product.Category.TShirt,
                     Price = 500.0F,
-                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
-                    ImageMimeType = "img/jpeg"
+                    ImageName = SaveImageAndGetFileName("wwwroot/img/top.jpg")
                 },
 
                 new Product
@@ -48,10 +43,25 @@ namespace M_and_A
                     Name = "Long Dress",
                     Type = Product.Category.Dress,
                     Price = 800.0F,
-                    ImagePath = File.ReadAllBytes(Path.Combine("wwwroot", "img", "whiteDress.jpg")),
-                    ImageMimeType = "img/jpeg"
+                    ImageName = SaveImageAndGetFileName("wwwroot/img/dress.PNG")
                 }
             );
         }
+
+        private static string SaveImageAndGetFileName(string imagePath)
+        {
+            // Отримання фізичного шляху до папки "wwwroot"
+            var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+            // Збереження зображення у папку "wwwroot/img"
+            var imageName = Guid.NewGuid().ToString() + Path.GetExtension(imagePath);
+            var destinationPath = Path.Combine(webRootPath, "img", imageName);
+            File.Copy(imagePath, destinationPath);
+
+            return imageName;
+        }
+
+
+
     }
 }

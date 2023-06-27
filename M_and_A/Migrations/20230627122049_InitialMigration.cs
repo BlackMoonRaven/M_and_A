@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace M_and_A.Migrations
 {
-    public partial class ShoppingMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,7 +45,8 @@ namespace M_and_A.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false)
+                    Price = table.Column<float>(type: "real", nullable: false),
+                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,13 +119,13 @@ namespace M_and_A.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "Name", "Price", "Type" },
+                columns: new[] { "Id", "ImageName", "Name", "Price", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Thong", 300f, 3 },
-                    { 2, "Jeans", 950f, 4 },
-                    { 3, "Top", 500f, 5 },
-                    { 4, "Long Dress", 800f, 2 }
+                    { 1, "139b793b-5632-4f39-9591-751b52e594ec.jpg", "Trousers", 300f, 3 },
+                    { 2, "e189ecda-388c-4370-a4bf-6077815c6094.jpg", "Jeans", 950f, 4 },
+                    { 3, "28d96785-9702-40d3-8f79-f381bf85dabf.jpg", "Top", 500f, 5 },
+                    { 4, "71305de8-6e4f-4422-9e8b-b617e3c2e129.PNG", "Long Dress", 800f, 2 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -4,12 +4,16 @@ namespace M_and_A.Models
 {
     public class User
     {
-        public int ID { get; set; }
+        public enum UserType
+        {
+            User,
+            Admin
+        }
+
+        public int Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public int? RoleId { get; set; }
-        public Role Role { get; set; }
-
+        public UserType Type { get; set; }
     }
 }

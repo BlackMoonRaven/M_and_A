@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using M_and_A.Models;
 using M_and_A.Models.ViewModels;
+using M_and_A.Data;
 
 namespace M_and_A.Controllers
 {
@@ -29,7 +30,6 @@ namespace M_and_A.Controllers
                 if (ModelState.IsValid)
                 {
                     User user = await db.Users
-                        .Include(u => u.Role)
                         .FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
                     if (user != null)
                     {
@@ -55,9 +55,7 @@ namespace M_and_A.Controllers
                 User user = await db.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
-                    // add user to db
-                    Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "buyer");
-                    user = new User { Email = model.Email, Password = model.Password , Role = userRole };
+                    user = new User { Email = model.Email, Password = model.Password};
                    
                     //if (userRole == null)
                     //    user.Role = userRole;
@@ -80,8 +78,7 @@ namespace M_and_A.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);

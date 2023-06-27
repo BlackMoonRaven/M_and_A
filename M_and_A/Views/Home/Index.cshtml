@@ -2,46 +2,102 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
+@using System.Linq;
 <div>
     <div class="row" style="background-color: darkorange; height: 30px; width: 350px;position: absolute; left: 0;">
         <p style="margin-left: 20px;">Sale</p>
     </div>
-
-    <div class="container row mt-4">
+    <diw class="container row mt-4"></diw>
+    <div class="container mt-4">
         <div class="row justify-content-center mt-5">
-            <div class="col-1">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-2">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-3">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-2">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-1">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
+            <div class="slider">
+                <div class="slider-wrapper">
+                    @foreach (var product in Model)
+                    {
+                        <div class="slide">
+                            <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
+                            <p>@product.Name</p>
+                            <p>@product.Price</p>
+                        </div>
+                    }
+                </div>
+                <div class="slider-controls">
+                    <div class="slider-arrow prev-arrow">&lt;</div>
+                    <div class="slider-arrow next-arrow">&gt;</div>
+                </div>
             </div>
         </div>
-        @if (Model != null)
-        {
-            <div class="row">
-                @foreach (var product in Model)
-                {
-                    <div class="col-md-3 my-3">
-                        <img src="data:@product.ImageMimeType;base64,@Convert.ToBase64String(product.ImagePath)" alt="@product.Name" style="width: 250px; height: 250px;" />
-                        <p>@product.Name</p>
-                        <p>@product.Price</p>
-                    </div>
-                }
-            </div>
-        }
     </div>
+
+    <style>
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            flex: 0 0 20%; /* Задайте ширину слайда відповідно до вашого бажання */
+            margin-right: 7px; /* Задайте відступ між слайдами відповідно до вашого бажання */
+        }
+
+        .slider-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+        }
+
+        .slider-arrow {
+            width: 30px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .prev-arrow {
+            margin-right: 20px;
+        }
+
+        .next-arrow {
+            margin-left: 1194px;
+        }
+    </style>
+
+    <script>
+        var sliderWrapper = document.querySelector('.slider-wrapper');
+        var slides = document.querySelectorAll('.slide');
+        var slideWidth = slides[0].offsetWidth;
+        var prevArrow = document.querySelector('.prev-arrow');
+        var nextArrow = document.querySelector('.next-arrow');
+
+        function slideNext() {
+            sliderWrapper.style.transform = 'translateX(-' + slideWidth + 'px)';
+            sliderWrapper.appendChild(slides[0]);
+        }
+
+        function slidePrev() {
+            sliderWrapper.insertBefore(slides[slides.length - 1], slides[0]);
+            sliderWrapper.style.transform = 'translateX(0)';
+        }
+
+        setInterval(slideNext, 8000); // Задайте бажаний інтервал для автоматичного гортання слайдів
+
+        nextArrow.addEventListener('click', slideNext);
+        prevArrow.addEventListener('click', slidePrev);
+    </script>
 </div>
-
-
-
-

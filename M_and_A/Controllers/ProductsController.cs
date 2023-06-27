@@ -9,16 +9,19 @@ using M_and_A.Data;
 using M_and_A.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Microsoft.AspNetCore.Hosting;
 
 namespace M_and_A.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ShoppingContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(ShoppingContext context)
+        public ProductsController(ShoppingContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Products
@@ -61,10 +64,24 @@ namespace M_and_A.Controllers
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[Authorize(Roles = "admin")]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Name,Type,Price, ImageName")] Product products)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        _context.Add(products);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(products);
+        //}
+
         [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Type,Price")] Product products)
+        public async Task<IActionResult> Create([Bind("Id,Name,Type,Price,ImageName")] Product products, IFormFile image)
         {
             if (!ModelState.IsValid)
             {
@@ -72,8 +89,74 @@ namespace M_and_A.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(products);
+
+            if (image != null && image.Length > 0)
+            {
+                var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                products.ImageName = imageName;
+            }
+
+            _context.Add(products);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
+
+
+        public IActionResult AddProduct(Product product, IFormFile image)
+        {
+            if (ModelState.IsValid)
+            {
+                if (image != null && image.Length > 0)
+                {
+                    var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
+
+                    using (var stream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        image.CopyTo(stream);
+                    }
+
+                    product.ImageName = imageName;
+                }
+
+                _context.Products.Add(product);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(product);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImage(IFormFile image)
+        {
+            if (image != null && image.Length > 0)
+            {
+                var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                // Додатковий код, якщо потрібно зберегти інформацію про зображення у базі даних
+
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+
 
         // GET: Products/Edit/5
         [Authorize(Roles = "admin")]
@@ -177,11 +260,15 @@ namespace M_and_A.Controllers
         //    {
         //        if (image != null && image.Length > 0)
         //        {
-        //            using (var ms = new MemoryStream())
+        //            var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+        //            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "wwrwoot", imageName);
+
+        //            using (var stream = new FileStream(imagePath, FileMode.Create))
         //            {
-        //                image.CopyTo(ms);
-        //                product.Image = ms.ToArray();
+        //                image.CopyTo(stream);
         //            }
+
+        //            product.ImageName = imageName;
         //        }
 
         //        _context.Products.Add(product);
@@ -190,5 +277,6 @@ namespace M_and_A.Controllers
         //    }
         //    return View(product);
         //}
+
     }
 }

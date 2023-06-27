@@ -1,5 +1,6 @@
 ﻿using M_and_A.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 public class HomeController : Controller
 {
@@ -21,11 +22,12 @@ public class HomeController : Controller
         var product = _context.Products.FirstOrDefault(p => p.Id == id);
         if (product != null)
         {
-            return File(product.ImagePath, product.ImageMimeType);
+            var imagePath = Path.Combine("~/img", product.ImageName); // Замініть "YourImagePath" на шлях до папки зображень у вашому проекті
+            return File(imagePath, "image/jpg"); // Замініть "image/jpeg" на відповідний тип MIME для вашого формату зображення
         }
         else
         {
-            return null;
+            return NotFound();
         }
     }
 }

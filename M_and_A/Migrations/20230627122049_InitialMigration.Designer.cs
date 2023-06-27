@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace M_and_A.Migrations
 {
     [DbContext(typeof(ShoppingContext))]
-    [Migration("20230222190832_ShoppingMigration")]
-    partial class ShoppingMigration
+    [Migration("20230627122049_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "6.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -121,6 +121,10 @@ namespace M_and_A.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -138,13 +142,15 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Thong",
+                            ImageName = "139b793b-5632-4f39-9591-751b52e594ec.jpg",
+                            Name = "Trousers",
                             Price = 300f,
                             Type = 3
                         },
                         new
                         {
                             Id = 2,
+                            ImageName = "e189ecda-388c-4370-a4bf-6077815c6094.jpg",
                             Name = "Jeans",
                             Price = 950f,
                             Type = 4
@@ -152,6 +158,7 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 3,
+                            ImageName = "28d96785-9702-40d3-8f79-f381bf85dabf.jpg",
                             Name = "Top",
                             Price = 500f,
                             Type = 5
@@ -159,6 +166,7 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 4,
+                            ImageName = "71305de8-6e4f-4422-9e8b-b617e3c2e129.PNG",
                             Name = "Long Dress",
                             Price = 800f,
                             Type = 2
