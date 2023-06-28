@@ -25,7 +25,7 @@ namespace M_and_A.Controllers
         }
 
         // GET: Products
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Products.ToListAsync());
@@ -55,7 +55,7 @@ namespace M_and_A.Controllers
         }
 
         // GET: Products/Create
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -78,7 +78,7 @@ namespace M_and_A.Controllers
         //    return View(products);
         //}
 
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Type,Price,ImageName")] Product products, IFormFile image)
@@ -92,7 +92,7 @@ namespace M_and_A.Controllers
 
             if (image != null && image.Length > 0)
             {
-                var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var imageName = Path.GetFileName(image.FileName);
                 var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
 
                 using (var stream = new FileStream(imagePath, FileMode.Create))
@@ -108,15 +108,13 @@ namespace M_and_A.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
         public IActionResult AddProduct(Product product, IFormFile image)
         {
             if (ModelState.IsValid)
             {
                 if (image != null && image.Length > 0)
                 {
-                    var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    var imageName = Path.GetFileName(image.FileName);
                     var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
 
                     using (var stream = new FileStream(imagePath, FileMode.Create))
@@ -129,18 +127,40 @@ namespace M_and_A.Controllers
 
                 _context.Products.Add(product);
                 _context.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
 
             return View(product);
         }
 
+
+        //[HttpPost]
+        //public async Task<IActionResult> UploadImage(IFormFile image)
+        //{
+        //    if (image != null && image.Length > 0)
+        //    {
+        //        var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+        //        var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
+
+        //        using (var stream = new FileStream(imagePath, FileMode.Create))
+        //        {
+        //            await image.CopyToAsync(stream);
+        //        }
+
+        //        // Додатковий код, якщо потрібно зберегти інформацію про зображення у базі даних
+
+        //        return Ok();
+        //    }
+
+        //    return BadRequest();
+        //}
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
             if (image != null && image.Length > 0)
             {
-                var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                var imageName = Path.GetFileName(image.FileName);
                 var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
 
                 using (var stream = new FileStream(imagePath, FileMode.Create))
@@ -254,29 +274,6 @@ namespace M_and_A.Controllers
         {
           return _context.Products.Any(e => e.Id == id);
         }
-        //public IActionResult AddProduct(Product product, IFormFile image)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (image != null && image.Length > 0)
-        //        {
-        //            var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-        //            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "wwrwoot", imageName);
-
-        //            using (var stream = new FileStream(imagePath, FileMode.Create))
-        //            {
-        //                image.CopyTo(stream);
-        //            }
-
-        //            product.ImageName = imageName;
-        //        }
-
-        //        _context.Products.Add(product);
-        //        _context.SaveChanges();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(product);
-        //}
 
     }
 }
