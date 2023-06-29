@@ -1,10 +1,10 @@
-﻿using M_and_A.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace M_and_A.Data
+namespace M_and_A.Models
 {
     public class UserContext : DbContext
     {
+        public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
 
         public UserContext(DbContextOptions<UserContext> options)
@@ -14,22 +14,21 @@ namespace M_and_A.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(p => p.Id);
+            string adminRoleName = "admin";
+            string buyerRoleName = "buyer";
 
-                entity.Property(c => c.Type)
-                .HasConversion<string>()
-                .HasMaxLength(150)
-                .IsUnicode(false);
+            string adminEmail = "admin@gmail.com";
+            string adminPassword = "123456";
 
-                entity.Property(s => s.Password)
-                .HasColumnType("varchar")
-                .HasMaxLength(150)
-                .IsUnicode(false);
+            // adding roles
+            Role adminRole = new Role { ID = 1, Name = adminRoleName };
+            Role buyerRole = new Role { ID = 2, Name = buyerRoleName };
+            User adminUser = new User { ID = 1, Email = adminEmail, Password = adminPassword, RoleId = adminRole.ID };
 
-            });
+            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, buyerRole });
+            modelBuilder.Entity<User>().HasData(new User[] { adminUser });
             base.OnModelCreating(modelBuilder);
+
         }
     }
 }

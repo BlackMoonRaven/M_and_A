@@ -31,31 +31,27 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
                             </li>
                         }
                         
-
-
+                        
                         <li class="nav-item" style="position: absolute; right: 0;">
                             <div class="row gx-2">
                                 <div class="col-auto">
-                                    <div class="p-2 border bg-light">
-                                        <img src="~/img/search.png" style="width: 10px; height: 20px; margin-right: 5px;" />
-                                        Search
+                                    <div class="p-2 border bg-light" id="searchButton" onclick="toggleSearch()">
+                                        <img id="searchImage" src="~/img/search.png" style="width: 10px; height: 20px; margin-right: 5px;" />
+                                        <input id="searchInput" type="text" placeholder="Search" style="border: none; outline: none; background: transparent;">
                                     </div>
                                 </div>
 
                                 <div class="col-auto">
-                                    @*<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Log in</a>*@
-
                                     @if (!User.Identity.IsAuthenticated)
                                     {
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
-                                        //<a asp-action="Login" asp-controller="Account">Log in</a>
                                     }
                                     else
                                     {
@@ -65,11 +61,14 @@
                             </div>
                         </li>
 
-
-
-
-
-
+                        <script>
+                            function toggleSearch() {
+                                var button = document.getElementById("searchButton");
+                                var input = document.getElementById("searchInput");
+                                button.classList.toggle("active");
+                                input.focus();
+                            }
+                        </script>
                     </ul>
                 </div>
             </div>

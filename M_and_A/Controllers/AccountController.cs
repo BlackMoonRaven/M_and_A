@@ -27,20 +27,21 @@ namespace M_and_A.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                User user = await db.Users
+                    .Include(u => u.Role)
+                    .FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                if (user != null)
                 {
-                    User user = await db.Users
-                        .FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
-                    if (user != null)
-                    {
-                        await Authenticate(user);
+                    await Authenticate(user);
 
-                        return RedirectToAction("Index", "Home");
-                    }
-                    ModelState.AddModelError("", "Incorrect login and (or) password");
+                    return RedirectToAction("Index", "Home");
                 }
-                return View(model); 
+                ModelState.AddModelError("", "Incorrect login and (or) password");
             }
+            return View(model);
+        }
         [HttpGet]
         public IActionResult Register()
         {
@@ -55,8 +56,10 @@ namespace M_and_A.Controllers
                 User user = await db.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
                 if (user == null)
                 {
-                    user = new User { Email = model.Email, Password = model.Password};
-                   
+                    // add user to db
+                    Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "buyer");
+                    user = new User { Email = model.Email, Password = model.Password, Role = userRole };
+
                     //if (userRole == null)
                     //    user.Role = userRole;
 
@@ -78,7 +81,8 @@ namespace M_and_A.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name)
             };
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
