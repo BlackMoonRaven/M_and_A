@@ -1,5 +1,7 @@
 ﻿using M_and_A.Data;
+using M_and_A.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
 
 public class HomeController : Controller
@@ -11,10 +13,30 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    //public IActionResult Index()
+    //{
+    //    var products = _context.Products.ToList();
+    //    return View(products);
+    //}
+    public async Task<IActionResult> Index(string sortOrder, string searchString)
     {
-        var products = _context.Products.ToList();
-        return View(products);
+        ViewData["LNameSort"] = string.IsNullOrEmpty(sortOrder) ? "lastname_list" : "";
+        ViewData["AddrSort"] = sortOrder == "address" ? "address_list" : "address";
+        ViewData["Filter"] = searchString;
+
+        var customers = _context.Products.Select(p => p);
+
+        if (!String.IsNullOrEmpty(searchString))
+        {
+            customers = customers.Where(p => p.Name.Contains(searchString));
+        }
+        customers = sortOrder switch
+        {
+            "lastname_list" => customers.OrderByDescending(p => p.Name),
+            _ => customers.OrderBy(p => p.Name),
+        };
+
+        return View(await customers.AsNoTracking().ToListAsync());
     }
 
     public IActionResult GetImage(int id)

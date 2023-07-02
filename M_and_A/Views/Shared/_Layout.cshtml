@@ -30,22 +30,32 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
-                        </li>
+                        </li>           
                         @if (User.IsInRole("admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Product</a>
                             </li>
                         }
-                        
-                        
+
+
                         <li class="nav-item" style="position: absolute; right: 0;">
                             <div class="row gx-2">
                                 <div class="col-auto">
-                                    <div class="p-2 border bg-light" id="searchButton" onclick="toggleSearch()">
+                                    @*<div class="p-2 border bg-light" id="searchButton" onclick="redirectToSearchPage()">
                                         <img id="searchImage" src="~/img/search.png" style="width: 10px; height: 20px; margin-right: 5px;" />
                                         <input id="searchInput" type="text" placeholder="Search" style="border: none; outline: none; background: transparent;">
-                                    </div>
+                                    </div>*@
+                                    <form asp-action="Index" method="get">
+                                        <div class="form-actions no-color">
+                                            <p>
+                                                <input type="text" name="SearchString" value="@ViewData["Filter"]" style="margin-left:1rem" />
+                                                <input type="submit" value="Search" class="btn btn-default" />
+     
+                                                @*<a asp-action="Index" style="vertical-align:middle; padding-left:1rem">Back to Full List</a>*@
+                                            </p>
+                                        </div>
+                                    </form>
                                 </div>
 
                                 <div class="col-auto">
@@ -60,15 +70,6 @@
                                 </div>
                             </div>
                         </li>
-
-                        <script>
-                            function toggleSearch() {
-                                var button = document.getElementById("searchButton");
-                                var input = document.getElementById("searchInput");
-                                button.classList.toggle("active");
-                                input.focus();
-                            }
-                        </script>
                     </ul>
                 </div>
             </div>

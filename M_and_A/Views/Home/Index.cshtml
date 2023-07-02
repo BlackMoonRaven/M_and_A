@@ -8,9 +8,10 @@
 
 @using System.Linq;
 <div>
-    <div class="row" style="background-color: darkorange; height: 30px; width: 350px;position: absolute; left: 0;">
-        <p style="margin-left: 20px;">Sale</p>
+    <div class="row" style="background-color: darkorange; height: 30px; width: 350px; position: absolute; left: 0;">
+        <p style="margin-left: 20px; color: white; font-weight: bold; line-height: 30px;">Sale</p>
     </div>
+
     <diw class="container row mt-4"></diw>
     <div class="container mt-4">
         <div class="row justify-content-center mt-5">
@@ -32,6 +33,26 @@
             </div>
         </div>
     </div>
+    <div class="row" style="background-color: darkorange; height: 30px; width: 350px; position: absolute; left: 0;">
+        <p style="margin-left: 20px; color: white; font-weight: bold; line-height: 30px;">Special for you</p>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mx-3">
+                    <div class="slide">
+                        <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
+                        <p>@product.Name</p>
+                        <p>@product.Price</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+
 
     <style>
         .slider {
@@ -84,15 +105,25 @@
         var slideWidth = slides[0].offsetWidth;
         var prevArrow = document.querySelector('.prev-arrow');
         var nextArrow = document.querySelector('.next-arrow');
+        var currentSlide = 0;
 
         function slideNext() {
-            sliderWrapper.style.transform = 'translateX(-' + slideWidth + 'px)';
-            sliderWrapper.appendChild(slides[0]);
+            currentSlide++;
+            sliderWrapper.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+            if (currentSlide === slides.length - 1) {
+                currentSlide = 0;
+                sliderWrapper.style.transform = 'translateX(0)';
+            }
         }
 
         function slidePrev() {
-            sliderWrapper.insertBefore(slides[slides.length - 1], slides[0]);
-            sliderWrapper.style.transform = 'translateX(0)';
+            if (currentSlide === 0) {
+                currentSlide = slides.length - 1;
+                sliderWrapper.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+            } else {
+                currentSlide--;
+                sliderWrapper.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+            }
         }
 
         setInterval(slideNext, 8000); // Задайте бажаний інтервал для автоматичного гортання слайдів
@@ -100,4 +131,5 @@
         nextArrow.addEventListener('click', slideNext);
         prevArrow.addEventListener('click', slidePrev);
     </script>
+
 </div>

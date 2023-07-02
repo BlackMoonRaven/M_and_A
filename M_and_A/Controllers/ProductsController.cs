@@ -134,27 +134,6 @@ namespace M_and_A.Controllers
             return View(product);
         }
 
-
-        //[HttpPost]
-        //public async Task<IActionResult> UploadImage(IFormFile image)
-        //{
-        //    if (image != null && image.Length > 0)
-        //    {
-        //        var imageName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-        //        var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "img", imageName);
-
-        //        using (var stream = new FileStream(imagePath, FileMode.Create))
-        //        {
-        //            await image.CopyToAsync(stream);
-        //        }
-
-        //        // Додатковий код, якщо потрібно зберегти інформацію про зображення у базі даних
-
-        //        return Ok();
-        //    }
-
-        //    return BadRequest();
-        //}
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
