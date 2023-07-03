@@ -12,7 +12,7 @@
         <p style="margin-left: 20px; color: white; font-weight: bold; line-height: 30px;">Sale</p>
     </div>
 
-    <diw class="container row mt-4"></diw>
+    <div class="container row mt-4"></div>
     <div class="container mt-4">
         <div class="row justify-content-center mt-5">
             <div class="slider">
@@ -40,19 +40,43 @@
         <div class="row">
             @foreach (var product in Model)
             {
+                var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
+                bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
+
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2 mx-3">
                     <div class="slide">
                         <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
                         <p>@product.Name</p>
-                        <p>@product.Price</p>
+                        <p>
+                            @product.Price
+                            <span class="heart-icon @(isFavorite ? "heart-filled" : "")" onclick="toggleHeart(this, @product.Id)">&#x2661;</span>
+                        </p>
                     </div>
                 </div>
             }
         </div>
     </div>
+    <div class="favorites">
+        <h2>Улюблені товари</h2>
+        <ul>
+            @foreach (var product in Model)
+            {
+                var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
+                bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
 
-
-
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mx-3">
+                    <div class="slide">
+                        <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
+                        <p>@product.Name</p>
+                        <p>
+                            @product.Price
+                            <span class="heart-icon @(isFavorite ? "heart-filled" : "")" onclick="toggleHeart(this, @product.Id)">&#x2661;</span>
+                        </p>
+                    </div>
+                </div>
+            }
+        </ul>
+    </div>
 
     <style>
         .slider {
@@ -97,6 +121,16 @@
         .next-arrow {
             margin-left: 1194px;
         }
+
+        .heart-icon {
+            cursor: pointer;
+            color: black;
+            font-size: 24px;
+        }
+
+        .heart-filled {
+            color: red;
+        }
     </style>
 
     <script>
@@ -126,10 +160,83 @@
             }
         }
 
-        setInterval(slideNext, 8000); // Задайте бажаний інтервал для автоматичного гортання слайдів
+        setInterval(slideNext, 8000);
 
         nextArrow.addEventListener('click', slideNext);
         prevArrow.addEventListener('click', slidePrev);
+
+        $(document).ready(function () {
+            restoreFavoriteProducts();
+        });
+
+        function toggleHeart(heartIcon, productId) {
+            heartIcon.classList.toggle("heart-filled");
+
+            var favoriteProducts = getFavoriteProductsFromCookies();
+
+            var index = favoriteProducts.indexOf(productId);
+            if (index > -1) {
+                favoriteProducts.splice(index, 1);
+            } else {
+                favoriteProducts.push(productId);
+            }
+
+            saveFavoriteProductsToCookies(favoriteProducts);
+        }
+
+        function getFavoriteProducts() {
+            var favoriteProducts = getFavoriteProductsFromCookies();
+
+            return favoriteProducts.map(function (productId) {
+                return getProductById(productId);
+            });
+        }
+
+        function getFavoriteProductsFromCookies() {
+            var favoriteProductsString = getCookie('favoriteProducts');
+            if (!favoriteProductsString) {
+                return [];
+            }
+            return JSON.parse(favoriteProductsString);
+        }
+
+        function saveFavoriteProductsToCookies(favoriteProducts) {
+            var favoriteProductsString = JSON.stringify(favoriteProducts);
+            setCookie('favoriteProducts', favoriteProductsString);
+        }
+
+        function restoreFavoriteProducts() {
+            var favoriteProducts = getFavoriteProductsFromCookies();
+            favoriteProducts.forEach(function (productId) {
+                var heartIcon = document.querySelector(`.heart-icon[data-productid="${productId}"]`);
+                if (heartIcon) {
+                    heartIcon.classList.add("heart-filled");
+                }
+            });
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+    </script>
+
     </script>
 
 </div>

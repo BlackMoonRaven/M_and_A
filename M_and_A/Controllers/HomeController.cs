@@ -2,7 +2,10 @@
 using M_and_A.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class HomeController : Controller
 {
@@ -13,30 +16,29 @@ public class HomeController : Controller
         _context = context;
     }
 
-    //public IActionResult Index()
-    //{
-    //    var products = _context.Products.ToList();
-    //    return View(products);
-    //}
     public async Task<IActionResult> Index(string sortOrder, string searchString)
     {
         ViewData["LNameSort"] = string.IsNullOrEmpty(sortOrder) ? "lastname_list" : "";
         ViewData["AddrSort"] = sortOrder == "address" ? "address_list" : "address";
         ViewData["Filter"] = searchString;
 
-        var customers = _context.Products.Select(p => p);
+        var products = _context.Products.Select(p => p);
 
-        if (!String.IsNullOrEmpty(searchString))
+        if (!string.IsNullOrEmpty(searchString))
         {
-            customers = customers.Where(p => p.Name.Contains(searchString));
+            products = products.Where(p => p.Name.Contains(searchString));
         }
-        customers = sortOrder switch
+        products = sortOrder switch
         {
-            "lastname_list" => customers.OrderByDescending(p => p.Name),
-            _ => customers.OrderBy(p => p.Name),
+            "lastname_list" => products.OrderByDescending(p => p.Name),
+            _ => products.OrderBy(p => p.Name),
         };
 
-        return View(await customers.AsNoTracking().ToListAsync());
+        var favoriteProducts = GetFavoriteProducts();
+
+        ViewBag.FavoriteProducts = favoriteProducts;
+
+        return View(await products.AsNoTracking().ToListAsync());
     }
 
     public IActionResult GetImage(int id)
@@ -51,5 +53,13 @@ public class HomeController : Controller
         {
             return NotFound();
         }
+    }
+
+    private List<int> GetFavoriteProducts()
+    {
+        // Ваш код для отримання списку улюблених продуктів для поточного користувача
+        // Наприклад, можна отримати дані з бази даних, кешу або будь-яким іншим способом
+        // Поверніть список ідентифікаторів улюблених продуктів
+        return new List<int> { 1, 2, 3 };
     }
 }
