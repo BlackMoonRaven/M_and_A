@@ -1,0 +1,64 @@
+﻿@model IEnumerable<M_and_A.Models.Product>
+
+@{
+    ViewData["Title"] = "Favorite Products";
+}
+
+<h1>Favorite Products</h1>
+
+<div class="favorites">
+    <h2>Улюблені товари</h2>
+    <ul class="row">
+        @foreach (var product in Model)
+        {
+            var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
+            bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
+
+            <li class="col-6 col-sm-4 col-md-3 col-lg-2 mx-3">
+                <div class="slide">
+                    <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
+                    <p>@product.Name</p>
+                    <p>
+                        @product.Price
+                        <span class="heart-icon @(isFavorite ? "heart-filled" : "")" onclick="toggleHeart(this, @product.Id)">&#x2661;</span>
+                    </p>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<style>
+    .favorites {
+        padding: 20px;
+    }
+
+    .slide {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+        .slide img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .slide p {
+            margin: 5px 0;
+        }
+
+    .heart-icon {
+        cursor: pointer;
+        color: black;
+        font-size: 24px;
+        transition: color 0.3s ease;
+    }
+
+    .heart-filled {
+        color: red;
+    }
+
+    /* Add any other styles you want to customize the layout */
+</style>

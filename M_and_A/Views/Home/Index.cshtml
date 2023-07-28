@@ -56,7 +56,7 @@
             }
         </div>
     </div>
-    <div class="favorites">
+   @* <div class="favorites">
         <h2>Улюблені товари</h2>
         <ul>
             @foreach (var product in Model)
@@ -76,7 +76,7 @@
                 </div>
             }
         </ul>
-    </div>
+    </div>*@
 
     <style>
         .slider {
@@ -172,16 +172,18 @@
         function toggleHeart(heartIcon, productId) {
             heartIcon.classList.toggle("heart-filled");
 
-            var favoriteProducts = getFavoriteProductsFromCookies();
-
-            var index = favoriteProducts.indexOf(productId);
-            if (index > -1) {
-                favoriteProducts.splice(index, 1);
-            } else {
-                favoriteProducts.push(productId);
-            }
-
-            saveFavoriteProductsToCookies(favoriteProducts);
+            // Викликаємо метод на сервері, який оновить властивість IsFavourite у базі даних
+            $.ajax({
+                url: '@Url.Action("UpdateFavouriteStatus", "Home")', // URL серверного методу
+                type: 'POST',
+                data: { id: productId }, // Передаємо ідентифікатор продукту на сервер
+                success: function (data) {
+                    console.log('Успішно оновлено статус улюбленого продукту.');
+                },
+                error: function () {
+                    console.error('Помилка при оновленні статусу улюбленого продукту.');
+                }
+            });
         }
 
         function getFavoriteProducts() {
@@ -236,7 +238,4 @@
             return null;
         }
     </script>
-
-    </script>
-
 </div>

@@ -57,9 +57,26 @@ public class HomeController : Controller
 
     private List<int> GetFavoriteProducts()
     {
-        // Ваш код для отримання списку улюблених продуктів для поточного користувача
-        // Наприклад, можна отримати дані з бази даних, кешу або будь-яким іншим способом
-        // Поверніть список ідентифікаторів улюблених продуктів
-        return new List<int> { 1, 2, 3 };
+        var favoriteProductIds = _context.Products
+            .Where(p => p.IsFavourite)
+            .Select(p => p.Id)
+            .ToList();
+
+        return favoriteProductIds;
+    }
+    [HttpPost]
+    public IActionResult UpdateFavouriteStatus(int id)
+    {
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
+        if (product != null)
+        {
+            product.IsFavourite = !product.IsFavourite; // Змінюємо статус улюбленого
+            _context.SaveChanges(); // Зберігаємо зміни у базі даних
+            return Ok(); // Повертаємо статус 200 OK, щоб підтвердити успішне оновлення
+        }
+        else
+        {
+            return NotFound(); // Якщо продукт з таким ідентифікатором не знайдено, повертаємо статус 404 Not Found
+        }
     }
 }

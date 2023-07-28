@@ -17,10 +17,28 @@ namespace M_and_A.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.15")
+                .HasAnnotation("ProductVersion", "6.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("M_and_A.Models.Basket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Baskets");
+                });
 
             modelBuilder.Entity("M_and_A.Models.Customer", b =>
                 {
@@ -123,7 +141,11 @@ namespace M_and_A.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsFavourite")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("Price")
@@ -140,7 +162,8 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 1,
-                            ImageName = "139b793b-5632-4f39-9591-751b52e594ec.jpg",
+                            ImageName = "8ffc0c97-f9e8-4d01-a770-acbc17d44a95.jpg",
+                            IsFavourite = false,
                             Name = "Trousers",
                             Price = 300f,
                             Type = 3
@@ -148,7 +171,8 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 2,
-                            ImageName = "e189ecda-388c-4370-a4bf-6077815c6094.jpg",
+                            ImageName = "d869a779-be54-424a-8086-50162f98bf12.jpg",
+                            IsFavourite = false,
                             Name = "Jeans",
                             Price = 950f,
                             Type = 4
@@ -156,7 +180,8 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 3,
-                            ImageName = "28d96785-9702-40d3-8f79-f381bf85dabf.jpg",
+                            ImageName = "28214d46-822f-4baf-9c8e-ff2d57bfb4f8.jpg",
+                            IsFavourite = false,
                             Name = "Top",
                             Price = 500f,
                             Type = 5
@@ -164,7 +189,8 @@ namespace M_and_A.Migrations
                         new
                         {
                             Id = 4,
-                            ImageName = "71305de8-6e4f-4422-9e8b-b617e3c2e129.PNG",
+                            ImageName = "5b89ccb0-b2ff-4e58-9f25-647e5a515f86.PNG",
+                            IsFavourite = false,
                             Name = "Long Dress",
                             Price = 800f,
                             Type = 2
@@ -184,6 +210,17 @@ namespace M_and_A.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderProduct");
+                });
+
+            modelBuilder.Entity("M_and_A.Models.Basket", b =>
+                {
+                    b.HasOne("M_and_A.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("M_and_A.Models.Discount", b =>
