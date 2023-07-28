@@ -4,29 +4,65 @@
     ViewData["Title"] = "Favorite Products";
 }
 
-<h1>Favorite Products</h1>
+<h4>Basket with your favorite products</h4>
 
 <div class="favorites">
-    <h2>Улюблені товари</h2>
-    <ul class="row">
-        @foreach (var product in Model)
-        {
-            var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
-            bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
+                bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
 
-            <li class="col-6 col-sm-4 col-md-3 col-lg-2 mx-3">
-                <div class="slide">
-                    <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
-                    <p>@product.Name</p>
-                    <p>
-                        @product.Price
-                        <span class="heart-icon @(isFavorite ? "heart-filled" : "")" onclick="toggleHeart(this, @product.Id)">&#x2661;</span>
-                    </p>
-                </div>
-            </li>
-        }
-    </ul>
+                <tr>
+                    <td>
+                        <img src="~/img/@product.ImageName" style="width: 100px; height: 125px;" />
+                    </td>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                    <td>
+                        @if (isFavorite)
+                        {
+                            <a class="heart-icon heart-filled" onclick="toggleHeart(this, @product.Id)">&#x2661;</a>
+                        }
+                        else
+                        {
+                            <a class="heart-icon" onclick="toggleHeart(this, @product.Id)">&#x2661;</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+<script>
+    function toggleHeart(heartIcon, productId) {
+        heartIcon.classList.toggle("heart-filled");
+
+        // Викликаємо метод на сервері, який оновить властивість IsFavourite у базі даних
+        $.ajax({
+            url: '@Url.Action("UpdateFavouriteStatus", "Home")', // URL серверного методу
+            type: 'POST',
+            data: { id: productId }, // Передаємо ідентифікатор продукту на сервер
+            success: function (data) {
+                console.log('Успішно оновлено статус улюбленого продукту.');
+            },
+            error: function () {
+                console.error('Помилка при оновленні статусу улюбленого продукту.');
+            }
+        });
+    }
+
+</script>
 
 <style>
     .favorites {
@@ -51,13 +87,13 @@
 
     .heart-icon {
         cursor: pointer;
-        color: black;
+        color: red;
         font-size: 24px;
         transition: color 0.3s ease;
     }
 
     .heart-filled {
-        color: red;
+        color: black;
     }
 
     /* Add any other styles you want to customize the layout */

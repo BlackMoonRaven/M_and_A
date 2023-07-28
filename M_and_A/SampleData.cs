@@ -2,22 +2,28 @@
 using M_and_A.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace M_and_A
 {
     public static class SampleData
     {
-
         public static void SeedData(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>().HasData(
+            SeedProducts(modelBuilder);
+        }
+
+        private static void SeedProducts(ModelBuilder modelBuilder)
+        {
+            var products = new[]
+            {
                 new Product
                 {
                     Id = 1,
                     Name = "Trousers",
                     Type = Product.Category.Underwear,
                     Price = 300.0F,
-                    ImageName = SaveImageAndGetFileName("wwwroot/img/trouses.jpg")
+                    ImageName = "trouses.jpg"
                 },
                 new Product
                 {
@@ -25,43 +31,40 @@ namespace M_and_A
                     Name = "Jeans",
                     Type = Product.Category.Pants,
                     Price = 950.0F,
-                    ImageName = SaveImageAndGetFileName("wwwroot/img/jeans.jpg")              
+                    ImageName = "jeans.jpg"
                 },
-
                 new Product
                 {
                     Id = 3,
                     Name = "Top",
                     Type = Product.Category.TShirt,
                     Price = 500.0F,
-                    ImageName = SaveImageAndGetFileName("wwwroot/img/top.jpg")
+                    ImageName = "top.jpg"
                 },
-
                 new Product
                 {
                     Id = 4,
                     Name = "Long Dress",
                     Type = Product.Category.Dress,
                     Price = 800.0F,
-                    ImageName = SaveImageAndGetFileName("wwwroot/img/dress.PNG")
+                    ImageName = "dress.PNG"
                 }
-            );
+            };
+
+            foreach (var product in products)
+            {
+                // Перевірка, чи існує файл зображення у папці "wwwroot/img"
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img", product.ImageName);
+                if (!File.Exists(imagePath))
+                {
+                    // Якщо файл не існує, тоді копіюємо його з початкової папки із зображеннями
+                    var sourceImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/original_images", product.ImageName);
+                    File.Copy(sourceImagePath, imagePath);
+                }
+
+                // Додавання продукту до БД
+                modelBuilder.Entity<Product>().HasData(product);
+            }
         }
-
-        private static string SaveImageAndGetFileName(string imagePath)
-        {
-            // Отримання фізичного шляху до папки "wwwroot"
-            var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-            // Збереження зображення у папку "wwwroot/img"
-            var imageName = Guid.NewGuid().ToString() + Path.GetExtension(imagePath);
-            var destinationPath = Path.Combine(webRootPath, "img", imageName);
-            File.Copy(imagePath, destinationPath);
-
-            return imageName;
-        }
-
-
-
     }
 }
