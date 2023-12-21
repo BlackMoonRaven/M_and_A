@@ -1,0 +1,100 @@
+﻿@model IEnumerable<M_and_A.Models.Product>
+
+@{
+    ViewData["Title"] = "Favorite Products";
+}
+
+<h4>Basket with your favorite products</h4>
+
+<div class="favorites">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
+                bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
+
+                <tr>
+                    <td>
+                        <img src="~/img/@product.ImageName" style="width: 100px; height: 125px;" />
+                    </td>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                    <td>
+                        @if (isFavorite)
+                        {
+                            <a class="heart-icon heart-filled" onclick="toggleHeart(this, @product.Id)">&#x2661;</a>
+                        }
+                        else
+                        {
+                            <a class="heart-icon" onclick="toggleHeart(this, @product.Id)">&#x2661;</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function toggleHeart(heartIcon, productId) {
+        heartIcon.classList.toggle("heart-filled");
+
+        // Викликаємо метод на сервері, який оновить властивість IsFavourite у базі даних
+        $.ajax({
+            url: '@Url.Action("UpdateFavouriteStatus", "Home")', // URL серверного методу
+            type: 'POST',
+            data: { id: productId }, // Передаємо ідентифікатор продукту на сервер
+            success: function (data) {
+                console.log('Успішно оновлено статус улюбленого продукту.');
+            },
+            error: function () {
+                console.error('Помилка при оновленні статусу улюбленого продукту.');
+            }
+        });
+    }
+
+</script>
+
+<style>
+    .favorites {
+        padding: 20px;
+    }
+
+    .slide {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+        .slide img {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .slide p {
+            margin: 5px 0;
+        }
+
+    .heart-icon {
+        cursor: pointer;
+        color: red;
+        font-size: 24px;
+        transition: color 0.3s ease;
+    }
+
+    .heart-filled {
+        color: black;
+    }
+
+    /* Add any other styles you want to customize the layout */
+</style>

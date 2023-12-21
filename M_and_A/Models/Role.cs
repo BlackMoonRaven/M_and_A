@@ -1,4 +1,4 @@
-﻿namespace M_and_A.Models
+namespace M_and_A.Models
 {
     public class Role
     {

@@ -1,32 +1,82 @@
-﻿using M_and_A.Models;
+﻿using M_and_A.Data;
+using M_and_A.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace M_and_A.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly ShoppingContext _context;
+
+    public HomeController(ShoppingContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index(string sortOrder, string searchString)
+    {
+        ViewData["LNameSort"] = string.IsNullOrEmpty(sortOrder) ? "lastname_list" : "";
+        ViewData["AddrSort"] = sortOrder == "address" ? "address_list" : "address";
+        ViewData["Filter"] = searchString;
+
+        var products = _context.Products.Select(p => p);
+
+        if (!string.IsNullOrEmpty(searchString))
         {
-            _logger = logger;
+            products = products.Where(p => p.Name.Contains(searchString));
         }
-
-        public IActionResult Index()
+        products = sortOrder switch
         {
-            return View();
+            "lastname_list" => products.OrderByDescending(p => p.Name),
+            _ => products.OrderBy(p => p.Name),
+        };
+
+        var favoriteProducts = GetFavoriteProducts();
+
+        ViewBag.FavoriteProducts = favoriteProducts;
+
+        return View(await products.AsNoTracking().ToListAsync());
+    }
+
+    public IActionResult GetImage(int id)
+    {
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
+        if (product != null)
+        {
+            var imagePath = Path.Combine("~/img", product.ImageName); // Замініть "YourImagePath" на шлях до папки зображень у вашому проекті
+            return File(imagePath, "image/jpg"); // Замініть "image/jpeg" на відповідний тип MIME для вашого формату зображення
         }
-
-        public IActionResult Privacy()
+        else
         {
-            return View();
+            return NotFound();
         }
+    }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+    private List<int> GetFavoriteProducts()
+    {
+        var favoriteProductIds = _context.Products
+            .Where(p => p.IsFavourite)
+            .Select(p => p.Id)
+            .ToList();
+
+        return favoriteProductIds;
+    }
+    [HttpPost]
+    public IActionResult UpdateFavouriteStatus(int id)
+    {
+        var product = _context.Products.FirstOrDefault(p => p.Id == id);
+        if (product != null)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            product.IsFavourite = !product.IsFavourite; // Змінюємо статус улюбленого
+            _context.SaveChanges(); // Зберігаємо зміни у базі даних
+            return Ok(); // Повертаємо статус 200 OK, щоб підтвердити успішне оновлення
+        }
+        else
+        {
+            return NotFound(); // Якщо продукт з таким ідентифікатором не знайдено, повертаємо статус 404 Not Found
         }
     }
 }

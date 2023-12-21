@@ -2,8 +2,8 @@ using M_and_A.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using M_and_A.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using M_and_A.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

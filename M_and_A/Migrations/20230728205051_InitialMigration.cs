@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace M_and_A.Migrations
 {
-    public partial class ShoppingMigration : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,9 +43,11 @@ namespace M_and_A.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false)
+                    Price = table.Column<float>(type: "real", nullable: false),
+                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsFavourite = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,6 +72,25 @@ namespace M_and_A.Migrations
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Baskets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Baskets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Baskets_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,14 +139,19 @@ namespace M_and_A.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "Name", "Price", "Type" },
+                columns: new[] { "Id", "ImageName", "IsFavourite", "Name", "Price", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Thong", 300f, 3 },
-                    { 2, "Jeans", 950f, 4 },
-                    { 3, "Top", 500f, 5 },
-                    { 4, "Long Dress", 800f, 2 }
+                    { 1, "8ffc0c97-f9e8-4d01-a770-acbc17d44a95.jpg", false, "Trousers", 300f, 3 },
+                    { 2, "d869a779-be54-424a-8086-50162f98bf12.jpg", false, "Jeans", 950f, 4 },
+                    { 3, "28214d46-822f-4baf-9c8e-ff2d57bfb4f8.jpg", false, "Top", 500f, 5 },
+                    { 4, "5b89ccb0-b2ff-4e58-9f25-647e5a515f86.PNG", false, "Long Dress", 800f, 2 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Baskets_ProductId",
+                table: "Baskets",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Discounts_ProductId",
@@ -145,6 +171,9 @@ namespace M_and_A.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Baskets");
+
             migrationBuilder.DropTable(
                 name: "Customers");
 

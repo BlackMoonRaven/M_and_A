@@ -10,7 +10,7 @@ namespace M_and_A.Models
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
-           Database.EnsureCreated();  
+            Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

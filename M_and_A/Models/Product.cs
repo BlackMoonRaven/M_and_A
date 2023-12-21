@@ -28,12 +28,14 @@ namespace M_and_A.Models
 
         public int Id { get; set; }
        // [Required]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Display(Name = "Category")]
         public Category Type { get; set; }
         public float Price { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Discount> DiscountId { get; set; }
+        public string ImageName { get; set; }
+        public bool IsFavourite { get; set; }
     }
 }

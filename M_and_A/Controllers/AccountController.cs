@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using M_and_A.Models;
 using M_and_A.Models.ViewModels;
+using M_and_A.Data;
 
 namespace M_and_A.Controllers
 {
@@ -26,21 +27,21 @@ namespace M_and_A.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
+            {
+                User user = await db.Users
+                    .Include(u => u.Role)
+                    .FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                if (user != null)
                 {
-                    User user = await db.Users
-                        .Include(u => u.Role)
-                        .FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
-                    if (user != null)
-                    {
-                        await Authenticate(user);
+                    await Authenticate(user);
 
-                        return RedirectToAction("Index", "Home");
-                    }
-                    ModelState.AddModelError("", "Incorrect login and (or) password");
+                    return RedirectToAction("Index", "Home");
                 }
-                return View(model); 
+                ModelState.AddModelError("", "Incorrect login and (or) password");
             }
+            return View(model);
+        }
         [HttpGet]
         public IActionResult Register()
         {
@@ -57,8 +58,8 @@ namespace M_and_A.Controllers
                 {
                     // add user to db
                     Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "buyer");
-                    user = new User { Email = model.Email, Password = model.Password , Role = userRole };
-                   
+                    user = new User { Email = model.Email, Password = model.Password, Role = userRole };
+
                     //if (userRole == null)
                     //    user.Role = userRole;
 

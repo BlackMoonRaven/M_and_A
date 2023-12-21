@@ -1,33 +1,220 @@
-﻿@{
+﻿@model List<Product>
+@{
     ViewData["Title"] = "Home Page";
 }
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
+@using System.Linq;
 <div>
-    <div class="row" style="background-color: darkorange; height: 30px; width: 350px;position: absolute; left: 0;">
-        <p style="margin-left: 20px;">Sale</p>
+    <div class="row" style="background-color: darkorange; height: 30px; width: 350px; position: absolute; left: 0;">
+        <p style="margin-left: 20px; color: white; font-weight: bold; line-height: 30px;">Sale</p>
     </div>
 
-    <div class="container row mt-4">
+    <div class="container row mt-4"></div>
+    <div class="container mt-4">
         <div class="row justify-content-center mt-5">
-            <div class="col-1">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-2">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-3">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-2">
-                <img src="~/img/blackDress.jpg" class="img-fluid" width="250" hight="250">
-            </div>
-            <div class="col-1">
-                <img src="~/img/blackDress.jpg" class="img-fluid"width="250" hight="250">
+            <div class="slider">
+                <div class="slider-wrapper">
+                    @foreach (var product in Model)
+                    {
+                        <div class="slide">
+                            <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
+                            <p>@product.Name</p>
+                            <p>@product.Price</p>
+                        </div>
+                    }
+                </div>
+                <div class="slider-controls">
+                    <div class="slider-arrow prev-arrow">&lt;</div>
+                    <div class="slider-arrow next-arrow">&gt;</div>
+                </div>
             </div>
         </div>
     </div>
+    <div class="row" style="background-color: darkorange; height: 30px; width: 350px; position: absolute; left: 0;">
+        <p style="margin-left: 20px; color: white; font-weight: bold; line-height: 30px;">Special for you</p>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                var favoriteProducts = (List<int>)ViewBag.FavoriteProducts;
+                bool isFavorite = favoriteProducts != null && favoriteProducts.Contains(product.Id);
+
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2 mx-3">
+                    <div class="slide">
+                        <img src="~/img/@product.ImageName" style="width: 200px; height: 250px;" />
+                        <p>@product.Name</p>
+                        <p>
+                            @product.Price
+                            <span class="heart-icon @(isFavorite ? "heart-filled" : "")" onclick="toggleHeart(this, @product.Id)">&#x2661;</span>
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <style>
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            flex: 0 0 20%; /* Задайте ширину слайда відповідно до вашого бажання */
+            margin-right: 7px; /* Задайте відступ між слайдами відповідно до вашого бажання */
+        }
+
+        .slider-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+        }
+
+        .slider-arrow {
+            width: 30px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .prev-arrow {
+            margin-right: 20px;
+        }
+
+        .next-arrow {
+            margin-left: 1194px;
+        }
+
+        .heart-icon {
+            cursor: pointer;
+            color: black;
+            font-size: 24px;
+        }
+
+        .heart-filled {
+            color: red;
+        }
+    </style>
+
+    <script>
+        var sliderWrapper = document.querySelector('.slider-wrapper');
+        var slides = document.querySelectorAll('.slide');
+        var slideWidth = slides[0].offsetWidth;
+        var prevArrow = document.querySelector('.prev-arrow');
+        var nextArrow = document.querySelector('.next-arrow');
+        var currentSlide = 0;
+
+        function slideNext() {
+            currentSlide++;
+            sliderWrapper.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+            if (currentSlide === slides.length - 1) {
+                currentSlide = 0;
+                sliderWrapper.style.transform = 'translateX(0)';
+            }
+        }
+
+        function slidePrev() {
+            if (currentSlide === 0) {
+                currentSlide = slides.length - 1;
+                sliderWrapper.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+            } else {
+                currentSlide--;
+                sliderWrapper.style.transform = 'translateX(-' + (slideWidth * currentSlide) + 'px)';
+            }
+        }
+
+        setInterval(slideNext, 8000);
+
+        nextArrow.addEventListener('click', slideNext);
+        prevArrow.addEventListener('click', slidePrev);
+
+        $(document).ready(function () {
+            restoreFavoriteProducts();
+        });
+
+        function toggleHeart(heartIcon, productId) {
+            heartIcon.classList.toggle("heart-filled");
+
+            // Викликаємо метод на сервері, який оновить властивість IsFavourite у базі даних
+            $.ajax({
+                url: '@Url.Action("UpdateFavouriteStatus", "Home")', // URL серверного методу
+                type: 'POST',
+                data: { id: productId }, // Передаємо ідентифікатор продукту на сервер
+                success: function (data) {
+                    console.log('Успішно оновлено статус улюбленого продукту.');
+                },
+                error: function () {
+                    console.error('Помилка при оновленні статусу улюбленого продукту.');
+                }
+            });
+        }
+
+        function getFavoriteProducts() {
+            var favoriteProducts = getFavoriteProductsFromCookies();
+
+            return favoriteProducts.map(function (productId) {
+                return getProductById(productId);
+            });
+        }
+
+        function getFavoriteProductsFromCookies() {
+            var favoriteProductsString = getCookie('favoriteProducts');
+            if (!favoriteProductsString) {
+                return [];
+            }
+            return JSON.parse(favoriteProductsString);
+        }
+
+        function saveFavoriteProductsToCookies(favoriteProducts) {
+            var favoriteProductsString = JSON.stringify(favoriteProducts);
+            setCookie('favoriteProducts', favoriteProductsString);
+        }
+
+        function restoreFavoriteProducts() {
+            var favoriteProducts = getFavoriteProductsFromCookies();
+            favoriteProducts.forEach(function (productId) {
+                var heartIcon = document.querySelector(`.heart-icon[data-productid="${productId}"]`);
+                if (heartIcon) {
+                    heartIcon.classList.add("heart-filled");
+                }
+            });
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+    </script>
 </div>
-
-
-
-
